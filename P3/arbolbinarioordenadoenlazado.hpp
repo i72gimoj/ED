@@ -35,14 +35,12 @@ namespace ed
 		public:
 			NodoArbolBinario (const G &info)
 			{
-				// TODO
-				NodoArbolBinario nuevo;
-				nuevo->setInfo(info);
-				nuevo->setIzquierdo(NULL);
-				nuevo->setDerecho(NULL);
+				this->setInfo(info);
+				_izquierdo=NULL;
+				_derecho=NULL;
 				//Postcondicion
 				#ifndef NDEBUG
-					assert((nuevo->getIzquierdo()==NULL) and (nuevo->getDerecho()==NULL));
+					assert((this->getIzquierdo()==NULL) and (this->getDerecho()==NULL));
 				#endif
 			}
 
@@ -87,7 +85,7 @@ namespace ed
 			{
 				// TODO
 				if(operador != NULL){
-					aplicar(operador);
+					operador.aplicar(this->getInfo());
 					recorridoPreOrden(operador->_izquierda);
 					recorridoPreOrden(operador->_derecha);
 				}
@@ -99,7 +97,7 @@ namespace ed
 				if(operador != NULL){
 					recorridoPostOrden(operador->_izquierda);
 					recorridoPostOrden(operador->_derecha);
-					aplicar(operador);
+					operador.aplicar(this->getInfo());
 				}
 			}
 
@@ -108,7 +106,7 @@ namespace ed
 				// TODO
 				if(operador != NULL){
 					recorridoInOrden(operador->_izquierda);
-					aplicar(operador);
+					operador.aplicar(this->getInfo());
 					recorridoInOrden(operador->_derecha);
 				}
 			}
@@ -121,12 +119,12 @@ namespace ed
 
 			void setIzquierdo(NodoArbolBinario *n)
 			{
-				_izquierdo=n.getIzquierdo();
+				_izquierdo=n;
 			}
 
 			void setDerecho(NodoArbolBinario *n)
 			{
-				_derecho=n.getDerecho();
+				_derecho=n;
 			}
 
 			NodoArbolBinario & operator=(const NodoArbolBinario &n)
@@ -195,7 +193,30 @@ namespace ed
 		bool insertar(const G &x)
 		{
 			// TODO
-			return false;
+			bool insertado=false;
+			while(x!=_actual->getInfo()){
+				if(x<_actual->getInfo()){
+					if(_actual->getIzquierdo()!=NULL){
+						_padre=_actual;
+						_actual=_actual->getIzquierdo();
+					}
+					else{
+						_actual->setIzquierdo(new NodoArbolBinario(x));
+						insertado=true;
+					}
+				}
+				else{
+					if(_actual->getDerecho()!=NULL){
+						_padre=_actual;
+						_actual=_actual->getDerecho();
+					}
+					else{
+						_actual->setDerecho(new NodoArbolBinario(x));
+						insertado=true;
+					}
+				}
+			}
+			return insertado;
 		}
 
 		void borrarArbol()
