@@ -46,7 +46,6 @@ namespace ed
 
 			NodoArbolBinario (const NodoArbolBinario &n)
 			{
-				// TODO
 				NodoArbolBinario nuevo = new NodoArbolBinario();
 				nuevo->setInfo(n.getInfo());
 				nuevo->setIzquierdo(n.getIzquierdo());
@@ -83,32 +82,29 @@ namespace ed
 
 			void recorridoPreOrden (OperadorNodo<G> &operador) const
 			{
-				// TODO
-				if(operador != NULL){
-					operador.aplicar(this->getInfo());
-					recorridoPreOrden(operador->_izquierda);
-					recorridoPreOrden(operador->_derecha);
-				}
+				operador.aplicar(this->getInfo());
+				if(this->getIzquierdo() != NULL)
+					this->getIzquierdo()->recorridoInOrden(operador);
+				if(this->getDerecho() != NULL)
+					this->getDerecho()->recorridoInOrden(operador);
 			}
 
 			void recorridoPostOrden (OperadorNodo<G> &operador) const
 			{
-				// TODO
-				if(operador != NULL){
-					recorridoPostOrden(operador->_izquierda);
-					recorridoPostOrden(operador->_derecha);
-					operador.aplicar(this->getInfo());
-				}
+				if(this->getIzquierdo() != NULL)
+					this->getIzquierdo()->recorridoInOrden(operador);
+				if(this->getDerecho() != NULL)
+					this->getDerecho()->recorridoInOrden(operador);
+				operador.aplicar(this->getInfo());
 			}
 
 			void recorridoInOrden (OperadorNodo<G> &operador) const
 			{
-				// TODO
-				if(operador != NULL){
-					recorridoInOrden(operador->_izquierda);
-					operador.aplicar(this->getInfo());
-					recorridoInOrden(operador->_derecha);
-				}
+				if(this->getIzquierdo() != NULL)
+					this->getIzquierdo()->recorridoInOrden(operador);
+				operador.aplicar(this->getInfo());
+				if(this->getDerecho() != NULL)
+					this->getDerecho()->recorridoInOrden(operador);
 			}
 
 			/*!\brief Modificadores. */
@@ -129,7 +125,6 @@ namespace ed
 
 			NodoArbolBinario & operator=(const NodoArbolBinario &n)
 			{
-				// TODO
 				//Precondicion
 				#ifndef NDEBUG
 					assert(this != n);
@@ -160,7 +155,7 @@ namespace ed
 			this->_raiz=NULL;
 			//Postcondicion
 			#ifndef NDEBUG
-				assert(estaVacio());
+				assert(this->estaVacio());
 			#endif
 		}
 
@@ -192,38 +187,52 @@ namespace ed
 
 		bool insertar(const G &x)
 		{
-			// TODO
 			bool insertado=false;
-			while(x!=_actual->getInfo()){
-				if(x<_actual->getInfo()){
-					if(_actual->getIzquierdo()!=NULL){
-						_padre=_actual;
-						_actual=_actual->getIzquierdo();
+			if (this->estaVacio()){
+				NodoArbolBinario nuevo(x);
+				_raiz = &nuevo;
+				insertado = true;
+			}
+			else{
+				_padre = NULL;
+				_actual = _raiz;
+			}
+			while(insertado=false){
+				while(x!=_actual->getInfo()){
+					if(x<_actual->getInfo()){
+						if(_actual->getIzquierdo()!=NULL){
+							_padre=_actual;
+							_actual=_actual->getIzquierdo();
+						}
+						else{
+							_actual->setIzquierdo(new NodoArbolBinario(x));
+							insertado=true;
+						}
 					}
 					else{
-						_actual->setIzquierdo(new NodoArbolBinario(x));
-						insertado=true;
-					}
-				}
-				else{
-					if(_actual->getDerecho()!=NULL){
-						_padre=_actual;
-						_actual=_actual->getDerecho();
-					}
-					else{
-						_actual->setDerecho(new NodoArbolBinario(x));
-						insertado=true;
+						if(_actual->getDerecho()!=NULL){
+							_padre=_actual;
+							_actual=_actual->getDerecho();
+						}
+						else{
+							_actual->setDerecho(new NodoArbolBinario(x));
+							insertado=true;
+						}
 					}
 				}
 			}
 			return insertado;
+			//Postcondicion
+			#ifndef NDEBUG
+				assert(buscar(x));
+			#endif
 		}
 
 		void borrarArbol()
 		{
 			//Precondicion
 			#ifndef NDEBUG
-				assert(! this->estaVacio());
+				assert(!this->estaVacio());
 			#endif
 
 			_raiz = NULL;
@@ -235,45 +244,92 @@ namespace ed
 
 		bool borrar()
 		{
-			// TODO
-			return false;
+			//Precondicion
+			#ifndef NDEBUG
+				assert(existeActual());
+			#endif
+			bool borrado=false;
+			if(_actual==_raiz){//Si el nodo actual es la raiz se borra la raiz quedando el arbol vacio
+				_raiz=NULL;
+				borrado=true;
+			}
+			else if(_actual->esHoja()){//Si el nodo es una hoja se borra el nodo y el arbol se queda como estaba
+				_actual=_padre;
+				borrado=true;
+			}
+			else{//En caso de que no sea una hoja, se borra el nodo y se cambia la estructura del arbol
+				if(_actual->getDerecho()==NULL && _actual->getIzquierdo()!=NULL)
+					_padre->setDerecho(_actual->getIzquierdo());
+				if(_actual->getIzquierdo()==NULL && _actual->getDerecho()!=NULL)
+					_padre->setIzquierdo(_actual->getDerecho());
+				if(_actual->getDerecho()!=NULL && _actual->getIzquierdo()!=NULL){
+					_actual=_actual->getDerecho()->getIzquierdo();
+					_actual->getDerecho()->getIzquierdo()->setInfo(_actual->getDerecho()->getDerecho()->getInfo());
+				}
+				borrado=true;
+			}
+			return borrado;
+			//Postcondicion
+			#ifndef NDEBUG
+				//assert();
+			#endif
 		}
 
 		void recorridoPreOrden (OperadorNodo<G> &operador) const
 		{
-			// TODO
+			_raiz->recorridoPreOrden(operador);
 		}
 
 		void recorridoPostOrden (OperadorNodo<G> &operador) const
 		{
-			// TODO
+			_raiz->recorridoPostOrden(operador);
 		}
 
 		void recorridoInOrden (OperadorNodo<G> &operador) const
 		{
-			// TODO
+			_raiz->recorridoInOrden(operador);
 		}
 
 		bool buscar(const G& x) const
 		{
 			// TODO
-			/*if(x==_raiz->getInfo())
+			bool encontrado=false;
+			if(x==_raiz->getInfo())
 				return true;
-			*_actual=*_raiz;
+			_padre=NULL;
+			_actual=_raiz;
 			while(_actual->getInfo()!=x){
-				if(x<_actual->getInfo())
-					_actual=_actual->getIzquierdo();
-				else{
-					_actual=_actual->getDerecho();
+				if(x<_actual->getInfo()){
+					if(_actual->getIzquierdo()!=NULL){
+						_padre=_actual;
+						_actual=_actual->getIzquierdo();
+					}
+					else{
+						_actual=NULL;
+					}
 				}
-				*_actual++;
+				else if(_actual->getInfo()<x){
+					if(_actual->getDerecho()==NULL){
+						_padre=_actual;
+						_actual=_actual->getDerecho();
+					}
+					else{
+						_actual=NULL;
+					}
+				}
+				else{
+					encontrado=true;
+				}
 			}
-			return true;
+			if(_actual==NULL){
+				_padre=NULL;
+				_actual=_raiz;
+			}
+			return encontrado;
 			//Postcondicion
 			#ifndef NDEBUG
 				assert(_actual->getInfo()==x);
-			#endif*/
-			return false;
+			#endif
 		}
 
 		bool estaVacio() const
