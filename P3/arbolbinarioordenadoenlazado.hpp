@@ -206,8 +206,7 @@ namespace ed
 		{//Inserta un nodo en el arbol de forma ordenada
 			bool insertado=false;
 			if (this->estaVacio()){//Si el arbol esta vacio se inserta el nodo como raiz
-				NodoArbolBinario nuevo(x);
-				_raiz = &nuevo;
+				_raiz = new NodoArbolBinario(x);
 				insertado = true;
 			}
 			else{//Si no esta vacio se pone el cursor _actual en la raiz
@@ -215,41 +214,37 @@ namespace ed
 				_actual = _raiz;
 			}//Mientras que no se haya insertado el nodo se hara el bucle
 			while(insertado==false){
-				//Si el nodo donde se encuentra el cursor _actual es igual nodo que se quiere insertar,
-				//no se insertara el nodo
-				while(x!=_actual->getInfo()){
-					//Para insertarlo comprobamos si es menor o mayor que el nodo actual para insertarlo
-					//como hoja en el lugar correspondiente del arbol
-					if(x<_actual->getInfo()){
-						//Si es menor nos vamos al hijo izquierdo y comprobamos si tiene hijo izquiedo
-						if(_actual->getIzquierdo()!=NULL){
-							//Actualizamos los cursores
-							_padre=_actual;//Movemos el padre al hijo izquierdo
-							_actual=_actual->getIzquierdo();//El cursor _actual pasa a ser el hijo izquierdo
-						}
-						else{//Si no tiene hijo izquierdo insertamos el nodo como su hijo izquierdo
-							_actual->setIzquierdo(new NodoArbolBinario(x));
-							insertado=true;
-						}
+				/*Para insertarlo comprobamos si es menor o mayor que el nodo actual para insertarlo
+					como hoja en el lugar correspondiente del arbol*/
+				if(x<_actual->getInfo()){
+					//Si es menor nos vamos al hijo izquierdo y comprobamos si tiene hijo izquiedo
+					if(_actual->getIzquierdo()!=NULL){
+						//Actualizamos los cursores
+						_padre=_actual;//Movemos el padre al hijo izquierdo
+						_actual=_actual->getIzquierdo();//El cursor _actual pasa a ser el hijo izquierdo
 					}
-					else{//Si el nodo es mayor nos vamos al hijo derecho y comprobamos si tiene mas hijos derechos
-						if(_actual->getDerecho()!=NULL){
-							//Actualizamops los cursores
-							_padre=_actual;//MOvemos el poadre al hijo derecho
-							_actual=_actual->getDerecho();//El cursor _actual pasa a ser el hijo izquierdo
-						}
-						else{
-							//Si no tiene hijo derecho, insertamos el nodo como hijo derecho
-							_actual->setDerecho(new NodoArbolBinario(x));
-							insertado=true;
-						}
+					else{//Si no tiene hijo izquierdo insertamos el nodo como su hijo izquierdo
+						_actual->setIzquierdo(new NodoArbolBinario(x));
+						insertado=true;
+					}
+				}
+				else{//Si el nodo es mayor nos vamos al hijo derecho y comprobamos si tiene mas hijos derechos
+					if(_actual->getDerecho()!=NULL){
+						//Actualizamops los cursores
+						_padre=_actual;//MOvemos el poadre al hijo derecho
+						_actual=_actual->getDerecho();//El cursor _actual pasa a ser el hijo izquierdo
+					}
+					else{
+						//Si no tiene hijo derecho, insertamos el nodo como hijo derecho
+						_actual->setDerecho(new NodoArbolBinario(x));
+						insertado=true;
 					}
 				}
 			}
 			return insertado;
 			//Postcondicion
 			#ifndef NDEBUG
-				//Comprobamos que el nodo se encuenra en el arbol
+				//Comprobamos que el nodo se encuentra en el arbol
 				assert(buscar(x));
 			#endif
 		}
@@ -311,22 +306,36 @@ namespace ed
 
 		void recorridoPreOrden (OperadorNodo<G> &operador) const
 		{//La raiz hace el recorrido pre-orden
+			//Precondicion
+			#ifndef NDEBUG
+				assert(!this->estaVacio());
+			#endif
 			_raiz->recorridoPreOrden(operador);
 		}
 
 		void recorridoPostOrden (OperadorNodo<G> &operador) const
 		{//La raiz hace el recorrrido post-orden
+			//Precondicion
+			#ifndef NDEBUG
+				assert(!this->estaVacio());
+			#endif
 			_raiz->recorridoPostOrden(operador);
 		}
 
 		void recorridoInOrden (OperadorNodo<G> &operador) const
 		{//La raiz hace el recorrido en-orden
+			//Precondicion
+			#ifndef NDEBUG
+				assert(!this->estaVacio());
+			#endif
 			_raiz->recorridoInOrden(operador);
 		}
 
 		bool buscar(const G& x)
 		{
 			bool encontrado=false;
+			if(estaVacio())
+				return false;
 			if(x==_raiz->getInfo()){
 				return true;
 			}

@@ -7,61 +7,77 @@
 #include "generarpersona.hpp"
 
 using namespace ed;
+using namespace std;
 
 int main()
 {
   srand(time(0));
   ArbolBinarioOrdenadoEnlazado<Persona> a;
-  AlmacenarNodo<G> aux();
-
-  std::cout<<"1. Insertar un numero de personas en el arbol"<<std::endl;
-  std::cout<<"2. Comprobar si una persona se encuentra en el arbol"<<std::endl;
-  std::cout<<"3. Mostrar todos los elementos del arbol. PreOrden, PostOrden, InOrden"<<std::endl;
-  std::cout<<"4. Borra una persona dando sus datos"<<std::endl;
-  std::cout<<"5. Borra el arbol completo"<<std::endl;
+  //AlmacenarNodo<G> aux;
+  Persona p;
+  AlmacenarNodo<Persona> op;
+  cout<<"\n---------------------------------------\n"<<endl;
+  cout<<"0. Salir del programa"<<endl;
+  cout<<"1. Insertar un numero de personas en el arbol"<<endl;
+  cout<<"2. Comprobar si una persona se encuentra en el arbol"<<endl;
+  cout<<"3. Mostrar todos los elementos del arbol. PreOrden, PostOrden, InOrden"<<endl;
+  cout<<"4. Borra una persona dando sus datos"<<endl;
+  cout<<"5. Borra el arbol completo"<<endl;
 
   int x;
-  std::cout<<"Introduce la opcion que desse ejecutar"<<std::endl;
-  std::cin>>x;
-
+  cout<<"\nIntroduce la opcion que desee ejecutar"<<endl;
+  cin>>x;
+  
   switch(x){
+    case 0:
+      cout<<"Saliendo del programa"<<endl;
+      exit(0);
+      break;
     case 1:
+      int n;
+      cout<<"Introduce el numero de personas a insertar"<<endl;
+      cin>>n;
+      for(int i=0; i<n; i++)
+        a.insertar(generarDatosPersonales());
+      main();
 
       break;
     case 2:
-      int dni;
-      std::cout<<"Introduce el dni"<<std::endl;
-      std::cin>>dni;
-      buscar(dni);
+      cout<<"Introduce la persona a buscar"<<endl;
+      cin>>p;
+      a.buscar(p);
+      main();
 
       break;
     case 3:
-      std::cout<<"Recorrido pre-orden:"<<std::endl;
-      recorridoPreOrden(&aux);
-      std::cout<<"Recorrido post-orden:"<<std::endl;
-      recorridoPostOrden(&aux);
-      std::cout<<"Recorrido en-orden:"<<std::endl;
-      recorridoInOrden(&aux);
+      cout<<"Recorrido pre-orden:"<<endl;
+      a.recorridoPreOrden(op);
+      cout<<"Recorrido post-orden:"<<endl;
+      a.recorridoPostOrden(op);
+      cout<<"Recorrido en-orden:"<<endl;
+      a.recorridoInOrden(op);
+      main();
 
       break;
     case 4:
-      std::cout<<"Introduce el dni"<<std::endl;
-      std::cin>>dni;
-
-      buscar(dni);
-      borrar();
-      std::cout<<"Persona borrada"<<std::endl;
+      cout<<"Introduce la persona a borrar"<<endl;
+      cin>>p;
+      a.buscar(p);
+      a.borrar();
+      if(!a.buscar(p))
+        cout<<"Persona borrada"<<endl;
+      main();
 
       break;
     case 5:
-      borrarArbol();
-      std::cout<<"Arbol borrado"<<std::endl;
+      a.borrarArbol();
+      if(a.estaVacio())
+        cout<<"Arbol borrado correctamente"<<endl;
+      main();
 
       break;
     default:
-      std::cout<<"Ha introducido un numero incorrecto"<<std::endl;
-      exit(-1);
-
-      break;
+      cout<<"Ha introducido un numero incorrecto"<<endl;
+      main();
   };
 }
