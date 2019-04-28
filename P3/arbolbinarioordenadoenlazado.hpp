@@ -77,7 +77,7 @@ namespace ed
 
 			bool esHoja() const
 			{//Comprueba si el nodo tiene hijos
-				if(this->getIzquierdo()==NULL && this->getDerecho()==NULL)
+				if(getIzquierdo()==NULL && getDerecho()==NULL)
 					return true;
 
 				return false;
@@ -86,37 +86,37 @@ namespace ed
 			void recorridoPreOrden (OperadorNodo<G> &operador) const
 			{//Los hijos realizan el recorrido pre-orden
 				//Mostramos la informacdion del nodo
-				operador.aplicar(this->getInfo());
+				operador.aplicar(getInfo());
 				//Si tiene hijo izquierdo, recorre desde la izquierda
-				if(this->getIzquierdo() != NULL)
-					this->getIzquierdo()->recorridoInOrden(operador);
+				if(getIzquierdo() != NULL)
+					getIzquierdo()->recorridoInOrden(operador);
 				//Si tiene hijo derecho, lo recorremos
-				if(this->getDerecho() != NULL)
-					this->getDerecho()->recorridoInOrden(operador);
+				if(getDerecho() != NULL)
+					getDerecho()->recorridoInOrden(operador);
 			}
 
 			void recorridoPostOrden (OperadorNodo<G> &operador) const
 			{//Los hijos realizanel recorrido post-orden
 				//Si tiene hijo izquierdo, recorre desde la izquierda
-				if(this->getIzquierdo() != NULL)
-					this->getIzquierdo()->recorridoInOrden(operador);
+				if(getIzquierdo() != NULL)
+					getIzquierdo()->recorridoInOrden(operador);
 				//Si tiene hijo derecho, lo recorremos
-				if(this->getDerecho() != NULL)
-					this->getDerecho()->recorridoInOrden(operador);
+				if(getDerecho() != NULL)
+					getDerecho()->recorridoInOrden(operador);
 				//Mostramos la informacdion del nodo
-				operador.aplicar(this->getInfo());
+				operador.aplicar(getInfo());
 			}
 
 			void recorridoInOrden (OperadorNodo<G> &operador) const
 			{//Los hijos realizan el recorrido en-orden
 				//Si tiene hijo izquierdo, recorre desde la izquierda
-				if(this->getIzquierdo() != NULL)
-					this->getIzquierdo()->recorridoInOrden(operador);
+				if(getIzquierdo() != NULL)
+					getIzquierdo()->recorridoInOrden(operador);
 				//Mostramos la informacdion del nodo
-				operador.aplicar(this->getInfo());
+				operador.aplicar(getInfo());
 				//Si tiene hijo derecho, lo recorremos
-				if(this->getDerecho() != NULL)
-					this->getDerecho()->recorridoInOrden(operador);
+				if(getDerecho() != NULL)
+					getDerecho()->recorridoInOrden(operador);
 			}
 
 			/*!\brief Modificadores. */
@@ -205,7 +205,7 @@ namespace ed
 		bool insertar(const G &x)
 		{//Inserta un nodo en el arbol de forma ordenada
 			bool insertado=false;
-			if (this->estaVacio()){//Si el arbol esta vacio se inserta el nodo como raiz
+			if (estaVacio()){//Si el arbol esta vacio se inserta el nodo como raiz
 				_raiz = new NodoArbolBinario(x);
 				insertado = true;
 			}
@@ -217,7 +217,7 @@ namespace ed
 				/*Para insertarlo comprobamos si es menor o mayor que el nodo actual para insertarlo
 					como hoja en el lugar correspondiente del arbol*/
 				if(x<_actual->getInfo()){
-					//Si es menor nos vamos al hijo izquierdo y comprobamos si tiene hijo izquiedo
+					//Si es menor nos vamos al hijo izquierdo y comprobamos si tiene hijo izquierdo
 					if(_actual->getIzquierdo()!=NULL){
 						//Actualizamos los cursores
 						_padre=_actual;//Movemos el padre al hijo izquierdo
@@ -231,7 +231,7 @@ namespace ed
 				else{//Si el nodo es mayor nos vamos al hijo derecho y comprobamos si tiene mas hijos derechos
 					if(_actual->getDerecho()!=NULL){
 						//Actualizamops los cursores
-						_padre=_actual;//MOvemos el poadre al hijo derecho
+						_padre=_actual;//Movemos el poadre al hijo derecho
 						_actual=_actual->getDerecho();//El cursor _actual pasa a ser el hijo izquierdo
 					}
 					else{
@@ -245,7 +245,7 @@ namespace ed
 			//Postcondicion
 			#ifndef NDEBUG
 				//Comprobamos que el nodo se encuentra en el arbol
-				assert(buscar(x));
+				assert((buscar(x)) or (insertado=true));
 			#endif
 		}
 
@@ -254,14 +254,14 @@ namespace ed
 			//Precondicion
 			#ifndef NDEBUG
 				//Comprobamos que el arbol a borrar no este vacio
-				assert(!this->estaVacio());
+				assert(!estaVacio());
 			#endif
 
 			_raiz = NULL;//Asignamos NULL a la raiz para indicar que el arbol se encuentra vacio
 			//Postcondicion
 			#ifndef NDEBUG
 				//Confirmamos que el arbol se ha vaciado despues de ejecutar la funcion
-				assert(this->estaVacio());
+				assert(estaVacio());
 			#endif
 		}
 
@@ -269,38 +269,81 @@ namespace ed
 		{//Borra el nodo donde se encuentre el cursor _actual
 			//Precondicion
 			#ifndef NDEBUG
-				assert(existeActual());
+				assert(!estaVacio());
 			#endif
+
 			bool borrado=false;
-			if(_actual==_raiz){//Si el nodo actual es la raiz se borra la raiz quedando el arbol vacio
-				_raiz=NULL;
-				borrado=true;
-			}
-			else if(_actual->esHoja()){//Si el nodo es una hoja se borra el nodo y el arbol se queda como estaba
-				_actual=_padre;
-				borrado=true;
-			}
-			else{//En caso de que no sea una hoja, se borra el nodo y se cambia la estructura del arbol
-				//Si solo tiene hijo izquierdo
-				if(_actual->getDerecho()==NULL && _actual->getIzquierdo()!=NULL)
-					_padre->setDerecho(_actual->getIzquierdo());
-				//Si solo tiene hijo derecho
-				if(_actual->getIzquierdo()==NULL && _actual->getDerecho()!=NULL)
+			/*Utilizamos copias de los cursores para no trabajar directamente sobre ellos, 
+			y no perder la informacion*/
+			NodoArbolBinario *aux_actual;
+			NodoArbolBinario *aux_padre;
+			aux_actual=_actual;
+			aux_padre=_padre;
+
+			NodoArbolBinario *actual;
+			actual=_actual;
+
+			/*Si tiene hijo derecho se va al nodo mas a la izquierda, eligiendo el sucesor mas proximo
+			para intercambiarlos*/
+			if(_actual->getDerecho()!=NULL){
+				_padre=_actual;
+				_actual=_actual->getDerecho();
+				while(_actual->getIzquierdo()!=NULL){//Nos vamos al nodo mas a la izquierda del hijo derecho
+					_padre=_actual;
+					_actual=_actual->getIzquierdo();
+				}
+				/*Si actual es menor al padre, se cambia el hijo izquierdo por el derecho*/
+				if(_actual->getInfo()<_padre->getInfo()){	
 					_padre->setIzquierdo(_actual->getDerecho());
-				//Si tiene hijo derecho e izquierdo
-				if(_actual->getDerecho()!=NULL && _actual->getIzquierdo()!=NULL){
+				}
+				else{//Si es mayor, se cambia el hijo derecho por el izquierdo
+					aux_actual->setDerecho(_actual->getDerecho());
+				}
+				aux_actual->setInfo(_actual->getInfo());
+				borrado=true;
+				//Se devuelven los punteros a su origen
+				_actual=aux_actual;
+				_padre=aux_padre;
+			}
+			/*En el caso de que no tengo hijo derecho y si izquierdo, se ira al nodo que este mas a la derecha
+			es decir, el predecesor mas proximo*/
+			else if(_actual->getIzquierdo()!=NULL){
+				_padre=_actual;
+				_actual=_actual->getIzquierdo();
+				while(_actual->getDerecho()!=NULL){
+					_padre=_actual;
 					_actual=_actual->getDerecho();
-					while(_actual!=NULL){
-						_actual=_actual->getIzquierdo();
-					}
-					_actual->setInfo(_actual->getDerecho()->getDerecho()->getInfo());
+				}
+				// Despues de haber llegado hasta el objetivo se intercambian los hijos para no perder informacion
+				if(_actual->getInfo()>_padre->getInfo()){
+					_padre->setDerecho(_actual->getIzquierdo());
+				}
+				else{
+					aux_actual->setIzquierdo(_actual->getIzquierdo());
+				}
+				aux_actual->setInfo(_actual->getInfo());
+				borrado=true;
+				// Se devuelven los punteros a su origen
+				_actual=aux_actual;
+				_padre=aux_padre;
+			}//Si no tiene hijos
+			else{
+				if(_raiz==_actual){//Si es la raiz, borra el arbol
+					borrarArbol();
+				}
+				else if(_actual->getInfo()<_padre->getInfo()){
+					_padre->setIzquierdo(NULL);//Se pone el cursor actual a NULL
+				}
+				else{
+					_padre->setDerecho(NULL);//Se pone el cursor actual a NULL
 				}
 				borrado=true;
 			}
 			return borrado;
 			//Postcondicion
 			#ifndef NDEBUG
-				//assert();
+				//El nodo no se encuentra en el arbol despues de haber sido borrado
+				assert(!buscar(actual->getInfo()));
 			#endif
 		}
 
@@ -308,7 +351,7 @@ namespace ed
 		{//La raiz hace el recorrido pre-orden
 			//Precondicion
 			#ifndef NDEBUG
-				assert(!this->estaVacio());
+				assert(!estaVacio());
 			#endif
 			_raiz->recorridoPreOrden(operador);
 		}
@@ -317,7 +360,7 @@ namespace ed
 		{//La raiz hace el recorrrido post-orden
 			//Precondicion
 			#ifndef NDEBUG
-				assert(!this->estaVacio());
+				assert(!estaVacio());
 			#endif
 			_raiz->recorridoPostOrden(operador);
 		}
@@ -326,7 +369,7 @@ namespace ed
 		{//La raiz hace el recorrido en-orden
 			//Precondicion
 			#ifndef NDEBUG
-				assert(!this->estaVacio());
+				assert(!estaVacio());
 			#endif
 			_raiz->recorridoInOrden(operador);
 		}
@@ -334,37 +377,34 @@ namespace ed
 		bool buscar(const G& x)
 		{
 			bool encontrado=false;
-			if(estaVacio())
-				return false;
-			if(x==_raiz->getInfo()){
-				return true;
-			}
+			//Se pone el cursor en la raiz
 			_padre=NULL;
 			_actual=_raiz;
-			while(_actual->getInfo()!=x){
-				if(x<_actual->getInfo()){
-					if(_actual->getIzquierdo()!=NULL){
+			//Si el arbol no esta vacio se recorre
+			while((_actual!=NULL) && (!encontrado)){//Se va recorriendo el arbol hasta encontrar el nodo
+				if(_actual->getInfo()>x){//Si es menor al nodo actual se va al hijo izquierdo
+					if(_actual->getIzquierdo()!=NULL){//Si tiene hijo izquierdo ctualiza cursores
 						_padre=_actual;
 						_actual=_actual->getIzquierdo();
 					}
-					else{
+					else{//Si no tiene hijo izquierdo se pone actual a NULL y retorna falso
 						_actual=NULL;
 					}
 				}
-				else if(_actual->getInfo()<x){
-					if(_actual->getDerecho()==NULL){
+				else if(_actual->getInfo()<x){//Si es mayor al nodo actual se va el cursor al hijo derecho
+					if(_actual->getDerecho()!=NULL){//Si tiene hijo derecho actualiza cursores
 						_padre=_actual;
 						_actual=_actual->getDerecho();
 					}
-					else{
+					else{//Si no, retorna falso
 						_actual=NULL;
 					}
 				}
-				else{
+				else{//Si es igual al nodo retorna verdadero
 					encontrado=true;
 				}
 			}
-			if(_actual==NULL){
+			if(_actual==NULL){//Si no se encuentra ponemos el cursor en la raiz
 				_padre=NULL;
 				_actual=_raiz;
 			}
@@ -378,7 +418,7 @@ namespace ed
 
 		bool estaVacio() const
 		{//Comprueba si el arbol esta vacio
-			if(this->_raiz==NULL)
+			if(_raiz==NULL)
 				return true;
 			return false;
 		}
@@ -388,7 +428,7 @@ namespace ed
 			//Precondicion
 			#ifndef NDEBUG
 				//El arbol no puede estar vacio
-				assert(!estaVacio());
+				assert(!this->estaVacio());
 			#endif
 			this->_raiz->getInfo();
 		}
@@ -401,7 +441,7 @@ namespace ed
 				assert(!estaVacio());
 			#endif
 			//Mientras tenga hijos o sea hoja, el nodo actual existe
-			if((this->_actual->getDerecho() != NULL) || (this->_actual->getIzquierdo() != NULL) || (this->_actual->esHoja()))
+			if((_actual->getDerecho() != NULL) || (_actual->getIzquierdo() != NULL) || (_actual->esHoja()))
 				return true;
 			return false;
 		}
@@ -411,7 +451,7 @@ namespace ed
 			//Precondicion
 			#ifndef NDEBUG
 				//El nodo actual debe existir para poder obtener su informacion
-				assert(existeActual());
+				assert(this->existeActual());
 			#endif
 			return this->_actual->getInfo();
 		}
