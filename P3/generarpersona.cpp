@@ -146,7 +146,18 @@ static const char * _nombres[] = {
   "BEATRIZ",
   "ROSA",
   "NURIA",
-  "SILVIA",
+  "SILVIA",  "10"
+  "5"
+  "1"
+  "9"
+  "7"
+  "6"
+  "8"
+  "20"
+  "15"
+  "25"
+  "22"
+  "27"
   "MONTSERRAT",
   "PATRICIA",
   "JULIA",

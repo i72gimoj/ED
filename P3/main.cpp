@@ -30,10 +30,10 @@ int main()
     cout<<"4. Borra el arbol completo"<<endl;
     cout<<"5. Volver a insertar personas en el arbol\n"<<endl;
     cout<<"\e[1;92m"<<"--------------------------------------------------"<<"\e[0m"<<endl;
-    
+
     cout<<"\nIntroduce la opcion que desee ejecutar"<<endl;
     cin>>opcion;
-    
+
     switch(opcion){
       case 0:
         cout<<"Saliendo del programa"<<endl;
@@ -74,8 +74,8 @@ int main()
         else{
           a.borrar();
           if(!a.buscar(p))
-            cout<<"Persona borrada correctamente"<<endl;        
-        }  
+            cout<<"Persona borrada correctamente"<<endl;
+        }
         break;
       case 4:
         if(a.estaVacio()){
