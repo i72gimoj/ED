@@ -38,12 +38,11 @@ bool cargarGrafo(Grafo<G_Nodo, G_Lado> * &g)
   cout << "Fichero de las etiquetas: ";
   cin >> ficheroEtiquetas;
 
-  // TODO
-
   ifstream fm, fe;
   fm.open(ficheroMatriz.c_str(), ios::in);
   fe.open(ficheroEtiquetas.c_str(), ios::in);
-
+//setLados();
+  //setNodos();
   if((fm.is_open()) && (fe.is_open()))
     return true;
   fm.close();
@@ -56,14 +55,33 @@ template <class G_Nodo, class G_Lado>
 void algoritmoFloyd(Grafo<G_Nodo, G_Lado> &g)
 {
   // TODO
-  G_Lado **matriz;
+  G_Lado **mDistancias;
+  int **mIntermedios;
+  //Intermedios
   for(int i=0; i<g.getNodos(); i++)
-    matriz[i][i]=0;
+    for(int j=0; j<g.getNodos(); i++){
+      if(i==j)
+        mIntermedios[i][j]=0;
+      else
+        mIntermedios[j][i]=i;
+    }
+  //Distancias
+  for(int i=0; i<g.getNodos(); i++)
+    G_Nodo n=g.nodoActual();
+    for(int j=0; j<g.getNodos(); i++){
+      G_Nodo nodo=g.nodoActual();
+      mIntermedios[i][j]=
+    }
+  
+
   for(int k=0; k<g.getNodos(); k++)
     for(int i=0; i<g.getNodos(); i++)
       for(int j=0; j<g.getNodos(); j++)
-        if(matriz[i][j]>(matriz[i][k]+matriz[k][j]))
-          matriz[i][j]=matriz[i][k]+matriz[k][j];
+        if((mDistancias[i][k]+mDistancias[k][j])<mDistancias[i][j]){
+          mDistancias[i][j]=(mDistancias[i][k]+mDistancias[k][j]);
+          mIntermedios[i][j]=mIntermedios[i][k];
+        }
+      
 }
 
 #endif

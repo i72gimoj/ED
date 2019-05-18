@@ -11,6 +11,15 @@ class AlgoritmosGrafos
 {
 public:
   // TODO
+	AlgoritmosGrafos();
+
+	/*int Distancia(){
+		Grafo<string, int> *g;
+		int dt=3;
+
+		algoritmoFLoyd(g);
+		return dt;
+	}*/
 
 };
 

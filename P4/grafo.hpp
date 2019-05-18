@@ -37,13 +37,11 @@ namespace ed
 		Grafo(Grafo &g){
 			*this=g;
 		}
-		// TODO
 
 		// destructor
 		~Grafo(){
 			if (not estaVacio())
 				borrarGrafo();
-			cout << "Destructor Usado \n";
 		}
 
 		void setLados(G_Lado **lados){
@@ -61,10 +59,12 @@ namespace ed
 		int getNodos(){
 			return (int)_nodos;
 		}
-		// TODO
+		G_Nodo nodoActual(){
+			
+		}
+		//TODO
 
 		// funciones
-		// TODO
 		void borrarGrafo() {	// cabecera indicada para que compile
 			_nodos=NULL;
 			_lados=NULL;
