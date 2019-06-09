@@ -3,6 +3,7 @@
 
 #include <cassert>
 #include <iostream>
+#include <stdio.h>
 
 using namespace std;
 
@@ -40,29 +41,17 @@ namespace ed
 
 		// destructor
 		~Grafo(){
-			if (not estaVacio())
-				borrarGrafo();
+			/*if (not estaVacio())
+				borrarGrafo();*/
 		}
 
-		void setLados(G_Lado **lados){
+		/*void setLados(G_Lado **lados){
 			_lados=lados;
 		}
 
 		int getLados(){
 			return _lados;
-		}
-
-		void setNodos(G_Nodo *nodos){
-			_nodos=nodos;
-		}
-
-		int getNodos(){
-			return (int)_nodos;
-		}
-		G_Nodo nodoActual(){
-			
-		}
-		//TODO
+		}*/
 
 		// funciones
 		void borrarGrafo() {	// cabecera indicada para que compile

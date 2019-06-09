@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <cstring>
+#include <stdio.h>
 #include <cstdlib> //Para usar system
 #include <fstream> //Para trabajar con ficheros
 
@@ -11,6 +12,8 @@
 
 using namespace std;
 using namespace ed;
+
+int nodo_=0;
 
 int menu()
 {
@@ -39,49 +42,71 @@ bool cargarGrafo(Grafo<G_Nodo, G_Lado> * &g)
   cin >> ficheroEtiquetas;
 
   ifstream fm, fe;
-  fm.open(ficheroMatriz.c_str(), ios::in);
-  fe.open(ficheroEtiquetas.c_str(), ios::in);
-//setLados();
-  //setNodos();
-  if((fm.is_open()) && (fe.is_open()))
-    return true;
-  fm.close();
-  fe.close();
-  return false;
+  fm.open(ficheroMatriz.c_str());
+  fe.open(ficheroEtiquetas.c_str());
 
+  if(!((fm.is_open()) && (fe.is_open()))){
+    cout<<"Error al abrir los ficheros"<<endl;
+    return false;
+  }
+  else{
+    string aux;
+    while(getline(fm,aux)){
+      nodo_++;
+    }
+    fm.close();
+    fe.close();
+    return true;
+  }
 }
 
 template <class G_Nodo, class G_Lado>
 void algoritmoFloyd(Grafo<G_Nodo, G_Lado> &g)
 {
-  // TODO
-  G_Lado **mDistancias;
-  int **mIntermedios;
+  int mDistancias[nodo_][nodo_];
+  int mIntermedios[nodo_][nodo_];
+  
   //Intermedios
-  for(int i=0; i<g.getNodos(); i++)
-    for(int j=0; j<g.getNodos(); i++){
+  for(int i=1; i<nodo_; i++)
+    for(int j=1; j<nodo_; i++){
       if(i==j)
         mIntermedios[i][j]=0;
       else
         mIntermedios[j][i]=i;
     }
   //Distancias
-  for(int i=0; i<g.getNodos(); i++)
-    G_Nodo n=g.nodoActual();
-    for(int j=0; j<g.getNodos(); i++){
-      G_Nodo nodo=g.nodoActual();
-      mIntermedios[i][j]=
+  for(int i=0; i<nodo_; i++){
+    for(int j=0; j<nodo_; j++){
+      mIntermedios[i][j]=0;
     }
-  
+  }
 
-  for(int k=0; k<g.getNodos(); k++)
-    for(int i=0; i<g.getNodos(); i++)
-      for(int j=0; j<g.getNodos(); j++)
+  for(int k=0; k<nodo_; k++)
+    for(int i=0; i<nodo_; i++)
+      for(int j=0; j<nodo_; j++)
         if((mDistancias[i][k]+mDistancias[k][j])<mDistancias[i][j]){
           mDistancias[i][j]=(mDistancias[i][k]+mDistancias[k][j]);
           mIntermedios[i][j]=mIntermedios[i][k];
         }
-      
+  
+  cout<<"Matriz distancias"<<endl;
+  for(int i=1; i<nodo_; i++){
+    for(int j=1; j<nodo_; j++)
+      cout<<mDistancias[i][j];
+    cout<<endl;
+  }
+  cout<<"Matriz intermedios"<<endl;
+  for(int i=1; i<nodo_; i++){
+    for(int j=1; j<nodo_; j++)
+      cout<<mIntermedios[i][j];
+    cout<<endl;
+  }
+  string ciudad1, ciudad2;
+  cout<<"Introduce dos nodos para calcular la distancia minima"<<endl;
+  cin>>ciudad1;
+  cin>>ciudad2;
+
+  getchar();
 }
 
 #endif
