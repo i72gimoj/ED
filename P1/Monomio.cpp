@@ -81,11 +81,11 @@ ed::Monomio & ed::Monomio::operator-=(ed::Monomio &m)
 		assert(std::abs (this->getGrado()-m.getGrado())<COTA_ERROR);
 	#endif //NDEBUG
 	double c=coeficiente_;
-	this->coeficiente_-=m.getCoeficiente();
+	this->setCoeficiente(this->getCoeficiente()-m.getCoeficiente());
 
 	//Postcondicion
 	#ifndef NDEBUG
-		assert(this->coeficiente_<c);
+		assert(this->getCoeficiente()<m.getCoeficiente());
 		assert(std::abs (m.getGrado()-this->getGrado())<COTA_ERROR);
 	#endif //NDEBUG
 
