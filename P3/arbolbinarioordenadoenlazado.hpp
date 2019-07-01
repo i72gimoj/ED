@@ -48,14 +48,14 @@ namespace ed
 			NodoArbolBinario (const NodoArbolBinario &n)
 			{//Constructor de copia de un nodo
 				//En el nodo nuevo se va a copiar la informacion del nodo n
-				NodoArbolBinario nuevo = new NodoArbolBinario();
-				nuevo->setInfo(n.getInfo());
-				nuevo->setIzquierdo(n.getIzquierdo());
-				nuevo->setDerecho(n.getDerecho());
+				//*this=n;
+				this->setInfo(n.getInfo());
+				this->setIzquierdo(n.getIzquierdo());
+				this->setDerecho(n.getDerecho());
 				//Postcondicion
 				#ifndef NDEBUG
 					//Los nodos son iguales
-					assert(nuevo==n);
+					assert(*this==n);
 				#endif
 			}
 
@@ -140,7 +140,7 @@ namespace ed
 				//Precondicion
 				#ifndef NDEBUG
 					//Los nodos deben ser diferentes
-					assert(this != n);
+					assert(this != &n);
 				#endif
 				this->setInfo(n.getInfo());
 				this->setIzquierdo(n.getIzquierdo());
@@ -150,7 +150,7 @@ namespace ed
 				//Postcondicion
 				#ifndef NDEBUG
 					//LOs nodos deben ser iguales
-					assert(this == n);
+					assert(this == &n);
 				#endif
 			}
 
