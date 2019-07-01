@@ -181,7 +181,7 @@ namespace ed
 			#ifndef NDEBUG
 				//Los arboles deben ser iguales
 				assert(this->_raiz == a._raiz);
-				assert(this->_raiz->getIzquierdo == a._raiz->getIzquierdo());
+				assert(this->_raiz->getIzquierdo() == a._raiz->getIzquierdo());
 				assert(this->_raiz->getDerecho() == a._raiz->getDerecho());
 			#endif
 		}
