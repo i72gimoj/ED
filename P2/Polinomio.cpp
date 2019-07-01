@@ -89,7 +89,8 @@ ed::Polinomio & ed::Polinomio::operator=(double const &x)
 ed::Polinomio & ed::Polinomio::operator+=(ed::Polinomio &p)
 {
 	for( int i = 0; i<p.getNumeroMonomios(); i++)
-		this->polinomio_.push_back(p.polinomio_[i]);
+		if(p.existeMonomio(i))
+			this->polinomio_.push_back(p.polinomio_[i]);
 
 	this->ordenaPolinomio();
 	// Se devuelve el objeto actual
@@ -110,7 +111,8 @@ ed::Polinomio & ed::Polinomio::operator+=(double const &x){
 ///			RESTA
 ed::Polinomio & ed::Polinomio::operator-=(Polinomio &p){
 	for( int i = 0; i<p.getNumeroMonomios(); i++)
-		this->polinomio_.push_back(-p.polinomio_[i]);
+		if(p.existeMonomio(i))
+			this->polinomio_.push_back(-p.polinomio_[i]);
 
 	this->ordenaPolinomio();
 	// Se devuelve el objeto actual

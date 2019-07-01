@@ -37,7 +37,7 @@ class Polinomio: public ed::PolinomioInterfaz
 		//! \name Constructores de la clase Polinomio
 	   	inline Polinomio(){
 			this->polinomio_.clear();
-	   		ed::Monomio m;
+	   		ed::Monomio m(0.0, 0);
 			this->polinomio_.push_back(m);
 			
 			#ifndef NDEBUG
